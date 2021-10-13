@@ -1,0 +1,50 @@
+# This is a basic workflow that is manually triggered
+
+name: Manual workflow
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    # inputs:
+    #   name:
+    #     # Friendly description to be shown in the UI instead of 'name'
+    #     description: 'Person to greet'
+    #     # Default value if no value is explicitly provided
+    #     default: 'World'
+    #     # Input has to be provided for the workflow to run
+    #     required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  setup_qemu:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: Install dependencies
+      run: | 
+        sudo apt update
+        sudo apt-get install -y unzip wget qemu-system-aarch64
+    - name: Create and enter working directory
+      run: |
+        sudo mkdir /alu_emu
+        sudo chown -R runner:docker /alu_emu
+    - name: Get qemu image files
+      run: |
+        wget -nv https://github.com/gm2552/alu-qemu-dev/raw/master/cloud.img
+        wget -nv https://github.com/gm2552/alu-qemu-dev/raw/master/flash0.img.zip
+        wget -nv https://github.com/gm2552/alu-qemu-dev/raw/master/flash1.img.zip
+        wget -nv https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-arm64-uefi1.img
+        unzip flash0.img.zip
+        unzip flash1.img.zip
+        ls -la
+      working-directory: /alu_emu
+    - name: Start Qemu
+      # run: qemu-system-aarch64 -m 2048 -smp 4 -cpu cortex-a57 -M virt -nographic -pflash flash0.img -pflash flash1.img -drive if=none,file=ubuntu-16.04-server-cloudimg-arm64-uefi1.img,id=hd0 -device virtio-blk-device,drive=hd0 -drive if=none,id=cloud,file=cloud.img -device virtio-blk-device,drive=cloud -netdev user,id=user0 -device virtio-net-device,netdev=user0
+      run: qemu-system-aarch64 -m 2048 -smp 4 -cpu cortex-a57 -M virt -nographic -pflash flash0.img -pflash flash1.img -drive if=none,file=ubuntu-16.04-server-cloudimg-arm64-uefi1.img,id=hd0 -device virtio-blk-device,drive=hd0 -drive if=none,id=cloud,file=cloud.img -device virtio-blk-device,drive=cloud -netdev user,id=user0 -device virtio-net-device,netdev=user0 -append
+      working-directory: /alu_emu
