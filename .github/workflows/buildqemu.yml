@@ -31,10 +31,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push Docker Hub
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile-QEMU
           push: true
           tags: jimnarey/aluqemu:latest
+      -
+        name: Login to GHCR
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_TOKEN }}
+      -
+        name: Build and push GHCR
+        id: ghcr_build
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile-QEMU
+          push: true
+          tags: ghcr.io/jimnarey/aluqemu:latest
