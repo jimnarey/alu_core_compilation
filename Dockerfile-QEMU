@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 RUN apt-get update -y && \
-    apt-get install -y unzip wget qemu-system-aarch64 && \
+    apt-get install -y unzip wget qemu-system-aarch64 ssh-keygen && \
     apt-get clean && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists
@@ -18,8 +18,11 @@ RUN mkdir /alu_emu && \
 WORKDIR /alu_emu
 USER 1000:1000
 
-RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/cloud.img && \
-    wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip && \
+RUN mkdir -p /home/runuser/.ssh && \
+    ssh-keygen -t rsa -f /home/runuser/.ssh/id_rsa -N '' && \
+    ls -la /home/runuser/ssh
+
+RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip && \
     wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash1.img.zip && \
     wget -nv https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-arm64-uefi1.img && \
     unzip flash0.img.zip && \
