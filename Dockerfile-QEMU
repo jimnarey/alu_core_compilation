@@ -14,9 +14,17 @@ RUN groupadd --gid 1000 runuser && \
     mkdir -p /home/runuser && \
     chown -R runuser:runuser /home/runuser
 
-USER runuser
+
 
 RUN mkdir -p /home/runuser/alu_emu
+COPY run_qemu.sh /home/runuser/alu_emu
+RUN chmod +x /home/runuser/alu_emu/run_qemu.sh
+COPY cloud.txt /home/runuser/alu_emu
+
+RUN chown -R runuser:runuser /home/runuser/alu_emu
+
+USER runuser
+
 WORKDIR /home/runuser/alu_emu
 RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip && \
     wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash1.img.zip && \
@@ -25,13 +33,10 @@ RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip 
     unzip flash1.img.zip && \
     rm flash0.img.zip flash1.img.zip
 
-COPY cloud.txt /home/runuser/alu_emu
+
 RUN mkdir -p /home/runuser/.ssh && \
     ssh-keygen -t rsa -f /home/runuser/.ssh/id_rsa -N '' && \
     sed -i "s,SSH_KEY,$(cat $HOME/.ssh/id_rsa.pub),g" cloud.txt && \
     cloud-localds --disk-format qcow2 cloud.img cloud.txt
-
-COPY run_qemu.sh /home/runuser/alu_emu
-RUN chmod +x /home/runuser/alu_emu/run_qemu.sh
 
 CMD = ["/home/runuser/alu_emu/run_qemu.sh"]
