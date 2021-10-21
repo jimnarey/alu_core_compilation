@@ -32,6 +32,6 @@ RUN mkdir -p /home/runuser/.ssh && \
     cloud-localds --disk-format qcow2 cloud.img cloud.txt
 
 COPY run_qemu.sh /home/runuser/alu_emu
-RUN chmod +x run_qemu.sh
+RUN chmod +x /home/runuser/alu_emu/run_qemu.sh
 
 CMD = ["/home/runuser/alu_emu/run_qemu.sh"]
