@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run:
+  run-qemu:
     runs-on: ubuntu-latest
+    container: jimnarey/aluqemu
       

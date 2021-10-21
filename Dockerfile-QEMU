@@ -30,3 +30,8 @@ RUN mkdir -p /home/runuser/.ssh && \
     ssh-keygen -t rsa -f /home/runuser/.ssh/id_rsa -N '' && \
     sed -i "s,SSH_KEY,$(cat $HOME/.ssh/id_rsa.pub),g" cloud.txt && \
     cloud-localds --disk-format qcow2 cloud.img cloud.txt
+
+COPY run_qemu.sh /home/runuser/alu_emu
+RUN chmod +x runqemu.sh
+
+CMD = ["/home/runuser/alu_emu/run_qemu.sh"]
