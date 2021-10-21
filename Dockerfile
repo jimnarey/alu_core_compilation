@@ -21,12 +21,15 @@ USER runuser
 
 RUN mkdir -p /home/runuser/alu_emu
 WORKDIR /home/runuser/alu_emu
-RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip && \
-    wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash1.img.zip && \
-    wget -nv https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-arm64-uefi1.img && \
-    unzip flash0.img.zip && \
-    unzip flash1.img.zip && \
-    rm flash0.img.zip flash1.img.zip
+# RUN wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash0.img.zip && \
+#     wget -nv https://github.com/jimnarey/alu-qemu-dev/raw/master/flash1.img.zip && \
+#     unzip flash0.img.zip && \
+#     unzip flash1.img.zip && \
+#     rm flash0.img.zip flash1.img.zip
+
+RUN wget -nv https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-arm64-uefi1.img && \
+    wget -nv https://releases.linaro.org/components/kernel/uefi-linaro/16.02/release/qemu64/QEMU_EFI.fd
+
 
 COPY cloud.txt /home/runuser/alu_emu
 RUN mkdir -p /home/runuser/.ssh && \
